@@ -60,7 +60,12 @@ public class AddNewCarActivity extends AppCompatActivity {
         if (added) {
             Toast.makeText(this, "dodano", Toast.LENGTH_LONG).show();
         }
-
+        make.setText(null);
+        model.setText(null);
+        year.setText(null);
+        urlImage = null;
+        imageView.setImageResource(R.drawable.no_image);
+        
     }
 
     @OnClick(R.id.add_image)
