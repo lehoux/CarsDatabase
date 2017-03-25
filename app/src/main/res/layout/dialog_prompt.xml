@@ -3,4 +3,15 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:text="Wprowadz adres url obrazka"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/url_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="adres url" />
+
 </LinearLayout>
