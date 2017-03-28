@@ -13,6 +13,7 @@ public class StethoMyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        boolean isInDebug = BuildConfig.DEBUG;
         Stetho.initializeWithDefaults(this);
     }
 }

@@ -3,12 +3,14 @@ package com.example.rent.carsdatabase.listing;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.rent.carsdatabase.MotoDbOpenHelper;
+import com.example.rent.carsdatabase.OnCarItemClickListener;
 import com.example.rent.carsdatabase.R;
 
 import butterknife.BindView;
@@ -59,7 +61,11 @@ public class ListingFragment extends Fragment {
             unbinder = ButterKnife.bind(this, view);
             String query = getArguments().getString(QUERY_KEY);
             RecyclerViewCursorAdapter recyclerViewCursorAdapter = new RecyclerViewCursorAdapter();
+            recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),
+                    LinearLayoutManager.VERTICAL, false
+                    ));
             recyclerView.setAdapter(recyclerViewCursorAdapter);
+            recyclerViewCursorAdapter.setOnCarItemClickListener((OnCarItemClickListener) getActivity());
             recyclerViewCursorAdapter.setCursor(openHelper.searchQuery(query));
         }
 

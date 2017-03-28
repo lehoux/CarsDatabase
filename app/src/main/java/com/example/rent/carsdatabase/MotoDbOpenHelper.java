@@ -5,25 +5,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-/**
- * Created by RENT on 2017-03-25.
- */
 
 public class MotoDbOpenHelper extends SQLiteOpenHelper {
-
-    private static final String DATABASE_NAME = "moto.db";
     private static int DATABASE_VERSION = 2;
-    // podbijamy z jedynki na dwójkę, jak upgradujemy tabele w metodzie
-    private static String SQL_CREATE_TABLE = "create table " + CarsTableContract.TABLE_NAME
-            + " (" + CarsTableContract._ID + " integer primary key autoincrement, "
-            + CarsTableContract.COLUMN_MAKE + " text, "
-            + CarsTableContract.COLUMN_MODEL + " text, "
-            + CarsTableContract.COLUMN_IMAGE + " text, "
-            + CarsTableContract.COLUMN_YEAR + " int) ";
+    private static final String DATABASE_NAME = "moto.db";
 
-    private static String SQL_DROP_TABLE = "drop table if exists " + CarsTableContract.TABLE_NAME;
+    private static String SQL_CREATE_TABLE = "CREATE TABLE " + CarsTableContract.TABLE_NAME + " ("
+            + CarsTableContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + CarsTableContract.COLUMN_MAKE + " TEXT, "
+            + CarsTableContract.COLUMN_MODEL + " TEXT, "
+            + CarsTableContract.COLUMN_IMAGE + " TEXT, "
+            + CarsTableContract.COLUMN_YEAR + " INT)";
+
+    private static String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + CarsTableContract.TABLE_NAME;
 
     public MotoDbOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,40 +29,50 @@ public class MotoDbOpenHelper extends SQLiteOpenHelper {
     }
 
     public boolean insertCar(Car car) {
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(CarsTableContract.COLUMN_MAKE, car.getMake());
-        contentValues.put(CarsTableContract.COLUMN_MODEL, car.getMake());
-        contentValues.put(CarsTableContract.COLUMN_YEAR, car.getMake());
-        contentValues.put(CarsTableContract.COLUMN_IMAGE, car.getMake());
+        contentValues.put(CarsTableContract.COLUMN_MODEL, car.getModel());
+        contentValues.put(CarsTableContract.COLUMN_IMAGE, car.getImage());
+        contentValues.put(CarsTableContract.COLUMN_YEAR, car.getYear());
 
-        long value = getWritableDatabase().insert(CarsTableContract.TABLE_NAME, null, contentValues);
+        long value = getWritableDatabase()
+                .insert(CarsTableContract.TABLE_NAME, null, contentValues);
 
         return value != -1;
     }
 
     public Cursor getAllItems() {
-        Cursor cursor = getReadableDatabase().query(CarsTableContract.TABLE_NAME,
-                new String[]{
-                        CarsTableContract._ID,
-                        CarsTableContract.COLUMN_MAKE,
-                        CarsTableContract.COLUMN_MODEL,
-                        CarsTableContract.COLUMN_IMAGE,
-                        CarsTableContract.COLUMN_YEAR
-
-                }, null, null, null, null, null);
-
-        Log.d("result", "cursoreSize" + cursor.getCount());
+        Cursor cursor = getReadableDatabase()
+                .query(CarsTableContract.TABLE_NAME, null, null, null, null, null, null);
         return cursor;
+    }
+
+    public Car getCarWithId(String id) {
+        Cursor cursor = getReadableDatabase().query(CarsTableContract.TABLE_NAME, null,
+                CarsTableContract._ID + " = ? ", new String[]{id}, null, null, null);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            Car car = new CarBuilder()
+                    .setMake(cursor.getString(cursor.getColumnIndex(CarsTableContract.COLUMN_MAKE)))
+                    .setImage(cursor.getString(cursor.getColumnIndex(CarsTableContract.COLUMN_IMAGE)))
+                    .setYear(cursor.getInt(cursor.getColumnIndex(CarsTableContract.COLUMN_YEAR)))
+                    .setModel(cursor.getString(cursor.getColumnIndex(CarsTableContract.COLUMN_MODEL)))
+                    .createCar();
+            cursor.close();
+            return car;
+        }
+
+        cursor.close();
+        return null;
     }
 
     public Cursor searchQuery(CharSequence constraint) {
         Cursor cursor = getReadableDatabase().query(CarsTableContract.TABLE_NAME,
-               null, CarsTableContract.COLUMN_MAKE + " like ?",
-
-                new String[] {
+                null,
+                CarsTableContract.COLUMN_MAKE + " LIKE ?",
+                new String[]{
                         constraint.toString() + "%"
-
                 }, null, null, null);
         return cursor;
     }

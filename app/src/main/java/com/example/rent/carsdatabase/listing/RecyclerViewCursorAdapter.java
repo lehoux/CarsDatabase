@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.rent.carsdatabase.CarsTableContract;
+import com.example.rent.carsdatabase.OnCarItemClickListener;
 import com.example.rent.carsdatabase.R;
 
 import static butterknife.ButterKnife.findById;
@@ -22,6 +23,7 @@ import static butterknife.ButterKnife.findById;
 public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerViewCursorAdapter.ViewHolder> {
 
     private Cursor cursor;
+    private OnCarItemClickListener onCarItemClickListener;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,6 +45,16 @@ public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerView
         holder.makeAndModel.setText(make + " " + model);
         Glide.with(holder.imageView.getContext()).load(imageUrl).into(holder.imageView);
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onCarItemClickListener != null) {
+                    cursor.moveToPosition(position);
+                    onCarItemClickListener.onCarItemClic(String.valueOf(cursor.getInt(0)));
+
+                }
+            }
+        });
     }
 
     @Override
@@ -54,6 +66,10 @@ public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerView
     public void setCursor(@Nullable Cursor cursor) {
         this.cursor = cursor;
         notifyDataSetChanged();
+    }
+
+    public void setOnCarItemClickListener(OnCarItemClickListener onCarItemClickListener) {
+        this.onCarItemClickListener = onCarItemClickListener;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
