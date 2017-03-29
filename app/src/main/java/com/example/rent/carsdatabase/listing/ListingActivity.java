@@ -1,13 +1,15 @@
 package com.example.rent.carsdatabase.listing;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.example.rent.carsdatabase.OnCarItemClickListener;
 import com.example.rent.carsdatabase.R;
 import com.example.rent.carsdatabase.details.DetailsFragment;
 
@@ -15,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class ListingActivity extends AppCompatActivity {
+public class ListingActivity extends AppCompatActivity implements OnCarItemClickListener {
 
     private static final String QUERY = "query";
 
@@ -32,7 +34,7 @@ public class ListingActivity extends AppCompatActivity {
         String query = getIntent().getStringExtra(QUERY);
         Fragment fragment = ListingFragment.getInstance(query);
 
-        getFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
@@ -45,13 +47,20 @@ public class ListingActivity extends AppCompatActivity {
         return intent;
     }
 
-    void onCarItemClick(String id){
-        android.support.v4.app.Fragment fragment = DetailsFragment.getInstance(id);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+    @Override
+    public void onCarItemClic(String id) {
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Fragment fragment = DetailsFragment.getInstance(id);
+            getSupportFragmentManager()
+                    .beginTransaction().replace(R.id.fragment_container, fragment)
+                    .addToBackStack("listing")
+                    .commit();
+        }else{
+            Fragment fragment = DetailsFragment.getInstance(id);
+            getSupportFragmentManager()
+                    .beginTransaction().replace(R.id.detail_container, fragment)
+                    .commit();
+        }
         Toast.makeText(this, "CarId " + id, Toast.LENGTH_LONG).show();
     }
-
 }

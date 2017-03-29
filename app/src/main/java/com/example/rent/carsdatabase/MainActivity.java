@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @OnClick(R.id.search_button)
+    @OnClick(R.id.search_car)
     void onSearchButtonClick() {
         startActivity(ListingActivity.createIntent(MainActivity.this,
                 autoCompleteTextView.getText().toString()));
